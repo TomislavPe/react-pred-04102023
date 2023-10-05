@@ -1,32 +1,28 @@
-import { useState, useEffect } from "react";
-import Comments from "./Comments"
+import { useEffect, useState } from "react";
+import Post from "./Post";
 
 const Posts = () => {
-    const [posts, setPosts] = useState();
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        getData();
+        fetch("https://jsonplaceholder.typicode.com/posts")
+            .then((res) => res.json())
+            .then((data) => setPosts(data));
     }, []);
 
-    const getData = async () => {
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts/");
-        const data = await res.json();
-        setPosts(data);
-    };
-
     return (
-        <>
-            {posts &&
-                posts.map(({ id, title , body}) => {
-                    return (
-                        <div key={id}>
-                            <h2>{title}</h2>
-                            <h3>{body}</h3>
-                            <Comments postId={id}/>
-                        </div>
-                    );
-                })}
-        </>
+        <div>
+            {posts.map((post) => {
+                return (
+                    <Post
+                        key={post.id}
+                        title={post.title}
+                        body={post.body}
+                        postId={post.id}
+                    />
+                );
+            })}
+        </div>
     );
 };
 
